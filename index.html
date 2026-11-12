@@ -41,15 +41,6 @@ input:focus{border-color:var(--green);box-shadow:0 0 0 3px #35df8318}
 .warn{color:var(--gold)}
 .total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;margin-top:14px;border:1px solid #356345;background:#0a1710;border-radius:13px;color:var(--muted);font-size:13px}
 .total b{font-size:22px;color:var(--green);white-space:nowrap}
-
-.pix-box{margin-top:18px;padding:15px;border:1px solid #356345;border-radius:14px;background:#0a1710}
-.pix-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
-.pix-hint{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
-.pix-key-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.pix-key{flex:1;min-width:190px;padding:12px;border:1px solid #345340;border-radius:10px;background:#07110d;color:var(--green);font-size:14px;font-weight:750;overflow-wrap:anywhere}
-.copy-pix{border:1px solid var(--green);border-radius:10px;padding:11px 14px;background:#153522;color:var(--green);font-weight:750;cursor:pointer}
-.pix-feedback{font-size:11px;color:var(--green);min-height:16px;margin-top:7px}
-
 .hide{display:none!important}
 .hp{position:absolute;left:-9999px}
 .enviar{width:100%;margin-top:20px;border:0;border-radius:13px;padding:16px;background:linear-gradient(100deg,var(--green),#20c878);color:#062313;font-size:16px;font-weight:850;cursor:pointer;box-shadow:0 9px 24px #19b86630}
@@ -68,8 +59,7 @@ footer{text-align:center;color:#718b79;font-size:11px;line-height:1.6;margin:17p
 const CONFIG = {
   NOME_LOJA: "Jonas Coins",
   API: "https://pedidos-jonas.jonaspzo.workers.dev",
-  WHATSAPP: "5549988642601",
-  PIX_KEY: "jonaspzo@outlook.com"
+  WHATSAPP: "5549988642601"
 };
 </script>
 </head>
@@ -93,7 +83,7 @@ const CONFIG = {
 <section class="estoque" id="boxPrecos">
   <div class="section-top"><strong>2. Preços por plataforma</strong><span class="live">Por 100K coins</span></div>
   <div class="plats">
-    <div class="plat"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="pxC">Consultando...</div><div class="px">Preço por 100K</div></div>
+    <div class="plat"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="pxC">Consultando...</div><div class="px">Preço por 100K</div><div class="at" id="pxCDetalhe">Preço automático via FutTransfer</div></div>
     <div class="plat"><div class="pn">💻 PC</div><div class="val" id="pxP">Consultando...</div><div class="px">Preço por 100K</div></div>
   </div>
 </section>
@@ -122,16 +112,6 @@ const CONFIG = {
   <label for="contato">Seu nome ou WhatsApp <span style="font-weight:400;color:#819b89">(opcional)</span></label>
   <input type="text" id="contato" name="contato" placeholder="Seu nome ou número com DDD">
 
-  <div class="pix-box">
-    <div class="pix-title">Pagamento via Pix</div>
-    <div class="pix-hint">Use a chave abaixo para realizar o pagamento. Confira o valor do pedido antes de transferir.</div>
-    <div class="pix-key-row">
-      <div class="pix-key" id="pixKey">jonaspzo@outlook.com</div>
-      <button class="copy-pix" type="button" id="copiarPix">Copiar chave</button>
-    </div>
-    <div class="pix-feedback" id="pixFeedback" aria-live="polite"></div>
-  </div>
-
   <input type="text" name="site" class="hp" tabindex="-1" autocomplete="off">
   <button class="enviar" id="btn" type="submit">Enviar pedido</button>
   <div class="msg" id="msg" role="alert"></div>
@@ -140,12 +120,7 @@ const CONFIG = {
 <section class="success hide" id="ok">
   <div class="big">✅</div>
   <h2>Pedido recebido!</h2>
-  <p>Recebemos seu pedido! Confira o valor combinado e, para pagar, use a chave Pix abaixo. Enviaremos a confirmação pelo contato informado.</p>
-  <div class="pix-box" style="text-align:left">
-    <div class="pix-title">Chave Pix (e-mail)</div>
-    <div class="pix-key-row"><div class="pix-key">jonaspzo@outlook.com</div><button class="copy-pix" type="button" id="copiarPixOk">Copiar chave</button></div>
-    <div class="pix-feedback" id="pixFeedbackOk" aria-live="polite"></div>
-  </div>
+  <p>Recebemos seu pedido. Entraremos em contato para combinar a autenticação e os próximos passos.<br><b>Não envie senhas nem códigos de backup pelo formulário.</b></p>
   <a id="zap" class="hide" target="_blank" rel="noopener">Falar no WhatsApp</a>
   <br><button type="button" id="novo">Fazer outro pedido</button>
 </section>
@@ -163,23 +138,6 @@ function parseCoins(v){
   if(!m)return null;
   return Math.round(parseFloat(m[1])*(m[2]==="M"?1e6:m[2]==="K"?1e3:1));
 }
-async function copiarChavePix(feedbackId){
-  const feedback=$(feedbackId);
-  try{
-    if(navigator.clipboard&&window.isSecureContext){
-      await navigator.clipboard.writeText(CONFIG.PIX_KEY);
-    }else{
-      const campo=document.createElement("textarea");
-      campo.value=CONFIG.PIX_KEY;campo.style.position="fixed";campo.style.opacity="0";
-      document.body.appendChild(campo);campo.select();
-      const ok=document.execCommand("copy");campo.remove();
-      if(!ok)throw new Error("Não foi possível copiar automaticamente.");
-    }
-    feedback.textContent="Chave Pix copiada!";
-  }catch(e){feedback.textContent="Copie manualmente: "+CONFIG.PIX_KEY;}
-}
-$("copiarPix").addEventListener("click",()=>copiarChavePix("pixFeedback"));
-$("copiarPixOk").addEventListener("click",()=>copiarChavePix("pixFeedbackOk"));
 async function carregarEstoque(){
   try{
     const r=await fetch(CONFIG.API+"/estoque",{cache:"no-store"});
@@ -192,6 +150,13 @@ async function carregarEstoque(){
     $("valP").textContent=estoque.PC===null?"Indisponível":(d.PC.texto||"—");
     $("pxC").textContent=precos.CONSOLE===null?"Não definido":brl(precos.CONSOLE);
     $("pxP").textContent=precos.PC===null?"Não definido":brl(precos.PC);
+    const detalhe=d.precosDetalhes;
+    if(detalhe&&detalhe.proceedsEUR&&detalhe.cambioEurBrl&&detalhe.atualizado){
+      const quando=new Date(detalhe.atualizado).toLocaleString("pt-BR");
+      $("pxCDetalhe").textContent=`FutTransfer: € ${Number(detalhe.proceedsEUR).toLocaleString("pt-BR",{minimumFractionDigits:3,maximumFractionDigits:3})} × câmbio ${Number(detalhe.cambioEurBrl).toLocaleString("pt-BR",{minimumFractionDigits:4,maximumFractionDigits:4})} × 1,5 · ${quando}`;
+    }else{
+      $("pxCDetalhe").textContent="Aguardando primeira leitura do FutTransfer";
+    }
     $("precoCForm").textContent=precos.CONSOLE===null?"Preço não definido":brl(precos.CONSOLE)+" / 100K";
     $("precoPForm").textContent=precos.PC===null?"Preço não definido":brl(precos.PC)+" / 100K";
     $("estC").classList.toggle("off",estoque.CONSOLE===null||estoque.CONSOLE===0);
