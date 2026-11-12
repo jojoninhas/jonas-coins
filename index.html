@@ -83,7 +83,7 @@ const CONFIG = {
 <section class="estoque" id="boxPrecos">
   <div class="section-top"><strong>2. Preços por plataforma</strong><span class="live">Por 100K coins</span></div>
   <div class="plats">
-    <div class="plat"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="pxC">Consultando...</div><div class="px">Preço por 100K</div><div class="at" id="pxCDetalhe">Preço automático via FutTransfer</div></div>
+    <div class="plat"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="pxC">Consultando...</div><div class="px">Preço por 100K</div></div>
     <div class="plat"><div class="pn">💻 PC</div><div class="val" id="pxP">Consultando...</div><div class="px">Preço por 100K</div></div>
   </div>
 </section>
@@ -150,13 +150,6 @@ async function carregarEstoque(){
     $("valP").textContent=estoque.PC===null?"Indisponível":(d.PC.texto||"—");
     $("pxC").textContent=precos.CONSOLE===null?"Não definido":brl(precos.CONSOLE);
     $("pxP").textContent=precos.PC===null?"Não definido":brl(precos.PC);
-    const detalhe=d.precosDetalhes;
-    if(detalhe&&detalhe.proceedsEUR&&detalhe.cambioEurBrl&&detalhe.atualizado){
-      const quando=new Date(detalhe.atualizado).toLocaleString("pt-BR");
-      $("pxCDetalhe").textContent=`FutTransfer: € ${Number(detalhe.proceedsEUR).toLocaleString("pt-BR",{minimumFractionDigits:3,maximumFractionDigits:3})} × câmbio ${Number(detalhe.cambioEurBrl).toLocaleString("pt-BR",{minimumFractionDigits:4,maximumFractionDigits:4})} × 1,5 · ${quando}`;
-    }else{
-      $("pxCDetalhe").textContent="Aguardando primeira leitura do FutTransfer";
-    }
     $("precoCForm").textContent=precos.CONSOLE===null?"Preço não definido":brl(precos.CONSOLE)+" / 100K";
     $("precoPForm").textContent=precos.PC===null?"Preço não definido":brl(precos.PC)+" / 100K";
     $("estC").classList.toggle("off",estoque.CONSOLE===null||estoque.CONSOLE===0);
