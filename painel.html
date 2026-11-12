@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel · Jonas Coins</title>
+<style>
+  :root { --cor: #22c55e; }
+</style>
+<script>
+  const CONFIG = {
+    NOME_LOJA: "Jonas Coins",
+    API: "https://pedidos-jonas.jonaspzo.workers.dev",    // o mesmo link do index.html
+  };
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #0b0f14; color: #e6edf3; min-height: 100vh;
+    display: flex; justify-content: center; padding: 20px 14px 40px;
+  }
+  .wrap { width: 100%; max-width: 480px; }
+  header { margin-bottom: 18px; }
+  header h1 { font-size: 22px; }
+  header p { color: #8b98a5; font-size: 14px; margin-top: 4px; }
+  .card { background: #121821; border: 1px solid #1f2933; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+  .card h2 { font-size: 15px; margin-bottom: 4px; }
+  .card .sub { font-size: 12px; color: #6b7785; margin-bottom: 14px; line-height: 1.4; }
+  label { display: block; font-size: 13px; color: #9fb0c0; margin: 12px 0 6px; font-weight: 600; }
+  .card > label:first-of-type, .row > div > label:first-child { margin-top: 0; }
+  input[type=text], input[type=password] {
+    width: 100%; padding: 13px 14px; border-radius: 10px; font-size: 16px;
+    background: #0b0f14; border: 1px solid #2a3542; color: #e6edf3; outline: none;
+  }
+  input:focus-visible, button:focus-visible { outline: 2px solid var(--cor); outline-offset: 2px; }
+  input:focus { border-color: var(--cor); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row > div { min-width: 0; }
+  .atual { font-size: 12px; color: #6b7785; margin-top: 6px; }
+  .atual b { color: #c9d4de; }
+  .btn { width: 100%; padding: 15px; border: 0; border-radius: 12px; background: var(--cor);
+    color: #04130a; font-size: 16px; font-weight: 800; cursor: pointer; }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  .btn.sec { background: #1a2330; color: #c9d4de; border: 1px solid #2a3542; font-size: 14px; font-weight: 600; padding: 12px; margin-top: 10px; }
+  .msg { margin-top: 12px; font-size: 14px; text-align: center; min-height: 20px; }
+  .msg.err { color: #ff6b6b; }
+  .msg.ok { color: var(--cor); }
+  .hide { display: none !important; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chips button { background: #1a2330; border: 1px solid #2a3542; color: #c9d4de;
+    padding: 6px 11px; border-radius: 999px; font-size: 12px; cursor: pointer; }
+  .chips button:hover { border-color: var(--cor); }
+  .plat-t { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .sep { height: 1px; background: #1f2933; margin: 16px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="titulo">Painel</h1>
+    <p>Altere o estoque e o preço que aparecem para os clientes.</p>
+  </header>
+
+  <!-- Entrar -->
+  <form class="card" id="login" autocomplete="off">
+    <h2>Entrar</h2>
+    <div class="sub">Use a senha que você cadastrou em ADMIN_PASSWORD no Cloudflare.</div>
+    <label for="senha">Senha do painel</label>
+    <input type="password" id="senha" autocomplete="current-password" required>
+    <div class="msg" id="msgLogin" role="alert"></div>
+    <button class="btn" id="btnLogin" type="submit">Entrar</button>
+  </form>
+
+  <!-- Painel -->
+  <form id="painel" class="hide" autocomplete="off">
+    <div class="card">
+      <div class="plat-t">🎮 Xbox / PS</div>
+      <div class="row">
+        <div>
+          <label for="eC">Estoque (coins)</label>
+          <input type="text" id="eC" placeholder="Ex: 3M" inputmode="text">
+        </div>
+        <div>
+          <label for="pC">Preço a cada 100K (R$)</label>
+          <input type="text" id="pC" placeholder="Ex: 55" inputmode="decimal">
+        </div>
+      </div>
+      <div class="atual" id="atC"></div>
+      <div class="chips" data-alvo="eC">
+        <button type="button" data-d="+100K">+100K</button>
+        <button type="button" data-d="+500K">+500K</button>
+        <button type="button" data-d="+1M">+1M</button>
+        <button type="button" data-d="-100K">−100K</button>
+        <button type="button" data-d="-500K">−500K</button>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="plat-t">💻 PC</div>
+      <div class="row">
+        <div>
+          <label for="eP">Estoque (coins)</label>
+          <input type="text" id="eP" placeholder="Ex: 1M" inputmode="text">
+        </div>
+        <div>
+          <label for="pP">Preço a cada 100K (R$)</label>
+          <input type="text" id="pP" placeholder="Ex: 49" inputmode="decimal">
+        </div>
+      </div>
+      <div class="atual" id="atP"></div>
+      <div class="chips" data-alvo="eP">
+        <button type="button" data-d="+100K">+100K</button>
+        <button type="button" data-d="+500K">+500K</button>
+        <button type="button" data-d="+1M">+1M</button>
+        <button type="button" data-d="-100K">−100K</button>
+        <button type="button" data-d="-500K">−500K</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sub" style="margin-bottom:12px">Escreva o estoque como 3M, 800K ou 1000000. Deixe o estoque vazio para esconder a plataforma do site. Os botões +/− mexem no número que está no campo.</div>
+      <div class="msg err hide" id="msgErr" role="alert"></div>
+      <button class="btn" id="btnSalvar" type="submit">Salvar e publicar</button>
+      <div class="msg" id="msg" aria-live="polite"></div>
+      <button class="btn sec" type="button" id="sair">Sair</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  $("titulo").textContent = "Painel · " + CONFIG.NOME_LOJA;
+  let senha = "";
+  try { senha = sessionStorage.getItem("painel_senha") || ""; } catch (e) {}
+
+  function parseCoins(v) {
+    const s = String(v || "").trim().toUpperCase().replace(/\s/g, "").replace(",", ".");
+    const m = s.match(/^(\d+(?:\.\d+)?)(K|M)?$/);
+    if (!m) return null;
+    return Math.round(parseFloat(m[1]) * (m[2] === "M" ? 1e6 : m[2] === "K" ? 1e3 : 1));
+  }
+  function fmt(n) {
+    if (n === null || n === undefined) return "escondido do site";
+    if (n >= 1e6) return (+(n / 1e6).toFixed(2) + "M").replace(".", ",");
+    if (n >= 1e3) return (+(n / 1e3).toFixed(1) + "K").replace(".", ",");
+    return String(n);
+  }
+  // Valor exato para os campos (sem arredondar): 3000000 → 3M, 800000 → 800K, 1234567 → 1234567
+  function campoTxt(n) {
+    if (n === null || n === undefined) return "";
+    if (n >= 1e6 && n % 1e6 === 0) return (n / 1e6) + "M";
+    if (n >= 1e3 && n % 1e3 === 0) return (n / 1e3) + "K";
+    return String(n);
+  }
+  const brl = (n) => n === null || n === undefined ? "sem preço" : "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const numTxt = (n) => n === null || n === undefined ? "" : String(n).replace(".", ",");
+
+  async function chamar(rota, corpo) {
+    const r = await fetch(CONFIG.API + rota, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ senha, ...corpo }),
+    });
+    let d; try { d = await r.json(); } catch { throw new Error("O servidor não respondeu direito. Confira o link do Worker."); }
+    if (!d.ok) { const e = new Error(d.erro || "Erro."); e.status = r.status; throw e; }
+    return d;
+  }
+
+  function preencher(d) {
+    $("eC").value = campoTxt(d.CONSOLE.coins);
+    $("eP").value = campoTxt(d.PC.coins);
+    $("pC").value = numTxt(d.precos.CONSOLE);
+    $("pP").value = numTxt(d.precos.PC);
+    $("atC").innerHTML = "No site agora: <b>" + fmt(d.CONSOLE.coins) + "</b> · <b>" + brl(d.precos.CONSOLE) + "</b> / 100K";
+    $("atP").innerHTML = "No site agora: <b>" + fmt(d.PC.coins) + "</b> · <b>" + brl(d.precos.PC) + "</b> / 100K";
+  }
+
+  function mostrarPainel() { $("login").classList.add("hide"); $("painel").classList.remove("hide"); }
+  function sair() {
+    senha = ""; try { sessionStorage.removeItem("painel_senha"); } catch (e) {}
+    $("painel").classList.add("hide"); $("login").classList.remove("hide"); $("senha").value = ""; $("senha").focus();
+  }
+
+  async function entrar() {
+    const d = await chamar("/admin/estado", {});
+    try { sessionStorage.setItem("painel_senha", senha); } catch (e) {}
+    preencher(d); mostrarPainel();
+  }
+
+  $("login").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    senha = $("senha").value; const m = $("msgLogin"); m.className = "msg"; m.textContent = "";
+    $("btnLogin").disabled = true; $("btnLogin").textContent = "Entrando...";
+    try { await entrar(); }
+    catch (err) { m.className = "msg err"; m.textContent = err.message; senha = ""; }
+    finally { $("btnLogin").disabled = false; $("btnLogin").textContent = "Entrar"; }
+  });
+
+  document.querySelectorAll(".chips").forEach((box) => box.addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    const campo = $(box.dataset.alvo);
+    const atual = campo.value.trim() === "" ? 0 : parseCoins(campo.value);
+    if (atual === null) { campo.focus(); return; }
+    const d = b.dataset.d, delta = parseCoins(d.slice(1));
+    campo.value = campoTxt(Math.max(0, atual + (d[0] === "+" ? delta : -delta)));
+  }));
+
+  $("painel").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = $("msgErr"), ok = $("msg"); err.classList.add("hide"); ok.className = "msg"; ok.textContent = "";
+    const corpo = { estoqueCONSOLE: $("eC").value, estoquePC: $("eP").value, precoCONSOLE: $("pC").value, precoPC: $("pP").value };
+    $("btnSalvar").disabled = true; $("btnSalvar").textContent = "Salvando...";
+    try {
+      const d = await chamar("/admin/salvar", corpo);
+      preencher(d);
+      ok.className = "msg ok"; ok.textContent = "Salvo. O site já mostra os novos valores.";
+    } catch (x) {
+      if (x.status === 401) { sair(); $("msgLogin").className = "msg err"; $("msgLogin").textContent = "Sessão expirada. Entre de novo."; return; }
+      err.textContent = x.message; err.classList.remove("hide");
+    } finally { $("btnSalvar").disabled = false; $("btnSalvar").textContent = "Salvar e publicar"; }
+  });
+
+  $("sair").onclick = sair;
+
+  if (senha) entrar().catch(() => sair());
+</script>
+</body>
+</html>
