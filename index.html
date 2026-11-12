@@ -42,13 +42,13 @@ input:focus{border-color:var(--green);box-shadow:0 0 0 3px #35df8318}
 .total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;margin-top:14px;border:1px solid #356345;background:#0a1710;border-radius:13px;color:var(--muted);font-size:13px}
 .total b{font-size:22px;color:var(--green);white-space:nowrap}
 
-.auth-options{display:grid;gap:9px}
-.auth-option{display:flex;align-items:flex-start;gap:11px;margin:0;padding:13px;border:1px solid #345340;border-radius:13px;background:#09140e;cursor:pointer}
-.auth-option:has(input:checked){border-color:var(--green);background:#153522;box-shadow:inset 0 0 0 1px var(--green)}
-.auth-option input{margin:3px 0 0;accent-color:var(--green);flex:0 0 auto}
-.auth-option span{display:grid;gap:4px}
-.auth-option b{font-size:13px;color:var(--text)}
-.auth-option small{font-size:12px;line-height:1.45;color:var(--muted);font-weight:400}
+.pix-box{margin-top:18px;padding:15px;border:1px solid #356345;border-radius:14px;background:#0a1710}
+.pix-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
+.pix-hint{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.pix-key-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pix-key{flex:1;min-width:190px;padding:12px;border:1px solid #345340;border-radius:10px;background:#07110d;color:var(--green);font-size:14px;font-weight:750;overflow-wrap:anywhere}
+.copy-pix{border:1px solid var(--green);border-radius:10px;padding:11px 14px;background:#153522;color:var(--green);font-weight:750;cursor:pointer}
+.pix-feedback{font-size:11px;color:var(--green);min-height:16px;margin-top:7px}
 
 .hide{display:none!important}
 .hp{position:absolute;left:-9999px}
@@ -68,7 +68,8 @@ footer{text-align:center;color:#718b79;font-size:11px;line-height:1.6;margin:17p
 const CONFIG = {
   NOME_LOJA: "Jonas Coins",
   API: "https://pedidos-jonas.jonaspzo.workers.dev",
-  WHATSAPP: "5549988642601"
+  WHATSAPP: "5549988642601",
+  PIX_KEY: "jonaspzo@outlook.com"
 };
 </script>
 </head>
@@ -121,18 +122,15 @@ const CONFIG = {
   <label for="contato">Seu nome ou WhatsApp <span style="font-weight:400;color:#819b89">(opcional)</span></label>
   <input type="text" id="contato" name="contato" placeholder="Seu nome ou número com DDD">
 
-  <label>Autenticação da conta EA</label>
-  <div class="auth-options">
-    <label class="auth-option" for="auth-orientacao">
-      <input type="radio" id="auth-orientacao" name="autenticacao" value="Quero receber orientações para autenticar com segurança" required>
-      <span><b>Quero ajuda para autenticar</b><small>Receberei instruções e farei a confirmação de acesso de forma segura.</small></span>
-    </label>
-    <label class="auth-option" for="auth-proprio">
-      <input type="radio" id="auth-proprio" name="autenticacao" value="Vou fazer login pessoalmente">
-      <span><b>Prefiro fazer o login pessoalmente</b><small>Eu mesmo farei o login no meu dispositivo.</small></span>
-    </label>
+  <div class="pix-box">
+    <div class="pix-title">Pagamento via Pix</div>
+    <div class="pix-hint">Use a chave abaixo para realizar o pagamento. Confira o valor do pedido antes de transferir.</div>
+    <div class="pix-key-row">
+      <div class="pix-key" id="pixKey">jonaspzo@outlook.com</div>
+      <button class="copy-pix" type="button" id="copiarPix">Copiar chave</button>
+    </div>
+    <div class="pix-feedback" id="pixFeedback" aria-live="polite"></div>
   </div>
-  <p class="hint warn">Por segurança, não informe sua senha EA nem códigos de backup neste formulário, no painel ou pelo Telegram. Nunca compartilhe códigos de recuperação.</p>
 
   <input type="text" name="site" class="hp" tabindex="-1" autocomplete="off">
   <button class="enviar" id="btn" type="submit">Enviar pedido</button>
@@ -142,7 +140,12 @@ const CONFIG = {
 <section class="success hide" id="ok">
   <div class="big">✅</div>
   <h2>Pedido recebido!</h2>
-  <p>Recebemos seu pedido. Entraremos em contato para combinar a autenticação e os próximos passos.<br><b>Não envie senhas nem códigos de backup pelo formulário.</b></p>
+  <p>Recebemos seu pedido! Confira o valor combinado e, para pagar, use a chave Pix abaixo. Enviaremos a confirmação pelo contato informado.</p>
+  <div class="pix-box" style="text-align:left">
+    <div class="pix-title">Chave Pix (e-mail)</div>
+    <div class="pix-key-row"><div class="pix-key">jonaspzo@outlook.com</div><button class="copy-pix" type="button" id="copiarPixOk">Copiar chave</button></div>
+    <div class="pix-feedback" id="pixFeedbackOk" aria-live="polite"></div>
+  </div>
   <a id="zap" class="hide" target="_blank" rel="noopener">Falar no WhatsApp</a>
   <br><button type="button" id="novo">Fazer outro pedido</button>
 </section>
@@ -160,6 +163,23 @@ function parseCoins(v){
   if(!m)return null;
   return Math.round(parseFloat(m[1])*(m[2]==="M"?1e6:m[2]==="K"?1e3:1));
 }
+async function copiarChavePix(feedbackId){
+  const feedback=$(feedbackId);
+  try{
+    if(navigator.clipboard&&window.isSecureContext){
+      await navigator.clipboard.writeText(CONFIG.PIX_KEY);
+    }else{
+      const campo=document.createElement("textarea");
+      campo.value=CONFIG.PIX_KEY;campo.style.position="fixed";campo.style.opacity="0";
+      document.body.appendChild(campo);campo.select();
+      const ok=document.execCommand("copy");campo.remove();
+      if(!ok)throw new Error("Não foi possível copiar automaticamente.");
+    }
+    feedback.textContent="Chave Pix copiada!";
+  }catch(e){feedback.textContent="Copie manualmente: "+CONFIG.PIX_KEY;}
+}
+$("copiarPix").addEventListener("click",()=>copiarChavePix("pixFeedback"));
+$("copiarPixOk").addEventListener("click",()=>copiarChavePix("pixFeedbackOk"));
 async function carregarEstoque(){
   try{
     const r=await fetch(CONFIG.API+"/estoque",{cache:"no-store"});
