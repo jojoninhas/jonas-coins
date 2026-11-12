@@ -41,6 +41,15 @@ input:focus{border-color:var(--green);box-shadow:0 0 0 3px #35df8318}
 .warn{color:var(--gold)}
 .total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;margin-top:14px;border:1px solid #356345;background:#0a1710;border-radius:13px;color:var(--muted);font-size:13px}
 .total b{font-size:22px;color:var(--green);white-space:nowrap}
+
+.auth-options{display:grid;gap:9px}
+.auth-option{display:flex;align-items:flex-start;gap:11px;margin:0;padding:13px;border:1px solid #345340;border-radius:13px;background:#09140e;cursor:pointer}
+.auth-option:has(input:checked){border-color:var(--green);background:#153522;box-shadow:inset 0 0 0 1px var(--green)}
+.auth-option input{margin:3px 0 0;accent-color:var(--green);flex:0 0 auto}
+.auth-option span{display:grid;gap:4px}
+.auth-option b{font-size:13px;color:var(--text)}
+.auth-option small{font-size:12px;line-height:1.45;color:var(--muted);font-weight:400}
+
 .hide{display:none!important}
 .hp{position:absolute;left:-9999px}
 .enviar{width:100%;margin-top:20px;border:0;border-radius:13px;padding:16px;background:linear-gradient(100deg,var(--green),#20c878);color:#062313;font-size:16px;font-weight:850;cursor:pointer;box-shadow:0 9px 24px #19b86630}
@@ -72,12 +81,20 @@ const CONFIG = {
 </header>
 
 <section class="estoque" id="boxEstoque">
-  <div class="section-top"><strong>Estoque e valores por plataforma</strong><span class="live">Atualização automática</span></div>
+  <div class="section-top"><strong>1. Estoque disponível</strong><span class="live">Atualização automática</span></div>
   <div class="plats">
-    <div class="plat" id="estC"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="valC">—</div><div class="px" id="pxC">Preço: consultando...</div></div>
-    <div class="plat" id="estP"><div class="pn">💻 PC</div><div class="val" id="valP">—</div><div class="px" id="pxP">Preço: consultando...</div></div>
+    <div class="plat" id="estC"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="valC">—</div></div>
+    <div class="plat" id="estP"><div class="pn">💻 PC</div><div class="val" id="valP">—</div></div>
   </div>
   <div class="at" id="estAt">Consultando estoque...</div>
+</section>
+
+<section class="estoque" id="boxPrecos">
+  <div class="section-top"><strong>2. Preços por plataforma</strong><span class="live">Por 100K coins</span></div>
+  <div class="plats">
+    <div class="plat"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="pxC">Consultando...</div><div class="px">Preço por 100K</div></div>
+    <div class="plat"><div class="pn">💻 PC</div><div class="val" id="pxP">Consultando...</div><div class="px">Preço por 100K</div></div>
+  </div>
 </section>
 
 <form id="f" autocomplete="off">
@@ -103,6 +120,19 @@ const CONFIG = {
 
   <label for="contato">Seu nome ou WhatsApp <span style="font-weight:400;color:#819b89">(opcional)</span></label>
   <input type="text" id="contato" name="contato" placeholder="Seu nome ou número com DDD">
+
+  <label>Autenticação da conta EA</label>
+  <div class="auth-options">
+    <label class="auth-option" for="auth-orientacao">
+      <input type="radio" id="auth-orientacao" name="autenticacao" value="Quero receber orientações para autenticar com segurança" required>
+      <span><b>Quero ajuda para autenticar</b><small>Receberei instruções e farei a confirmação de acesso de forma segura.</small></span>
+    </label>
+    <label class="auth-option" for="auth-proprio">
+      <input type="radio" id="auth-proprio" name="autenticacao" value="Vou fazer login pessoalmente">
+      <span><b>Prefiro fazer o login pessoalmente</b><small>Eu mesmo farei o login no meu dispositivo.</small></span>
+    </label>
+  </div>
+  <p class="hint warn">Por segurança, não informe sua senha EA nem códigos de backup neste formulário, no painel ou pelo Telegram. Nunca compartilhe códigos de recuperação.</p>
 
   <input type="text" name="site" class="hp" tabindex="-1" autocomplete="off">
   <button class="enviar" id="btn" type="submit">Enviar pedido</button>
@@ -140,8 +170,8 @@ async function carregarEstoque(){
     if(d.min)minimo=d.min;
     $("valC").textContent=estoque.CONSOLE===null?"Indisponível":(d.CONSOLE.texto||"—");
     $("valP").textContent=estoque.PC===null?"Indisponível":(d.PC.texto||"—");
-    $("pxC").textContent=precos.CONSOLE===null?"Preço não definido":brl(precos.CONSOLE)+" por 100K";
-    $("pxP").textContent=precos.PC===null?"Preço não definido":brl(precos.PC)+" por 100K";
+    $("pxC").textContent=precos.CONSOLE===null?"Não definido":brl(precos.CONSOLE);
+    $("pxP").textContent=precos.PC===null?"Não definido":brl(precos.PC);
     $("precoCForm").textContent=precos.CONSOLE===null?"Preço não definido":brl(precos.CONSOLE)+" / 100K";
     $("precoPForm").textContent=precos.PC===null?"Preço não definido":brl(precos.PC)+" / 100K";
     $("estC").classList.toggle("off",estoque.CONSOLE===null||estoque.CONSOLE===0);

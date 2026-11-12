@@ -120,6 +120,19 @@
     </div>
 
     <div class="card">
+      <h2>Atendimento e autenticação</h2>
+      <div class="sub">Atalhos para agilizar o contato com o cliente. A autenticação deve ser feita diretamente pelo cliente; não peça que ele envie senha ou códigos de backup pelo painel ou Telegram.</div>
+      <div class="plat-t">Mensagem para solicitar autenticação</div>
+      <div class="sub" style="margin-top:8px">Use quando o pedido estiver pronto para processamento.</div>
+      <button class="btn" type="button" id="copiarAut">Copiar mensagem de autenticação</button>
+      <div class="sep"></div>
+      <div class="plat-t">Mensagem de acompanhamento</div>
+      <div class="sub" style="margin-top:8px">Use para avisar que o pedido está em andamento.</div>
+      <button class="btn sec" type="button" id="copiarAnd">Copiar mensagem de acompanhamento</button>
+      <div class="msg" id="msgAtendimento" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
       <div class="sub" style="margin-bottom:12px">Escreva o estoque como 3M, 800K ou 1000000. Deixe o estoque vazio para esconder a plataforma do site. Os botões +/− mexem no número que está no campo.</div>
       <div class="msg err hide" id="msgErr" role="alert"></div>
       <button class="btn" id="btnSalvar" type="submit">Salvar e publicar</button>
@@ -220,6 +233,25 @@
       err.textContent = x.message; err.classList.remove("hide");
     } finally { $("btnSalvar").disabled = false; $("btnSalvar").textContent = "Salvar e publicar"; }
   });
+
+  async function copiarMensagem(texto) {
+    const m = $("msgAtendimento");
+    try {
+      await navigator.clipboard.writeText(texto);
+      m.className = "msg ok";
+      m.textContent = "Mensagem copiada. Cole na conversa com o cliente.";
+    } catch (e) {
+      m.className = "msg err";
+      m.textContent = "Não foi possível copiar automaticamente. Tente novamente pelo navegador.";
+    }
+  }
+
+  $("copiarAut").onclick = () => copiarMensagem(
+    "Olá! Seu pedido Jonas Coins está pronto para a etapa de autenticação. Por segurança, não envie sua senha nem códigos de backup por mensagem. Vamos combinar um horário para você realizar a autenticação diretamente durante o atendimento."
+  );
+  $("copiarAnd").onclick = () => copiarMensagem(
+    "Olá! Seu pedido Jonas Coins está em andamento. Avisaremos assim que houver atualização. Obrigado pela preferência!"
+  );
 
   $("sair").onclick = sair;
 
