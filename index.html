@@ -103,9 +103,9 @@ const CONFIG = {
   <label>Plataforma</label>
   <div class="seg">
     <input type="radio" name="plataforma" id="p1" value="CONSOLE" required>
-    <label for="p1">🎮 Xbox / PS<small id="precoCForm">Preço: — / 100K</small></label>
+    <label for="p1">🎮 Xbox / PS</label>
     <input type="radio" name="plataforma" id="p2" value="PC">
-    <label for="p2">💻 PC<small id="precoPForm">Preço: — / 100K</small></label>
+    <label for="p2">💻 PC</label>
   </div>
 
   <label>Método de entrega</label>
@@ -195,8 +195,6 @@ async function carregarEstoque(){
     $("valP").textContent=estoque.PC===null?"Indisponível":(d.PC.texto||"—");
     $("pxC").textContent=precos.CONSOLE===null?"Não definido":brl(precos.CONSOLE);
     $("pxP").textContent=precos.PC===null?"Não definido":brl(precos.PC);
-    $("precoCForm").textContent=precos.CONSOLE===null?"Preço não definido":brl(precos.CONSOLE)+" / 100K";
-    $("precoPForm").textContent=precos.PC===null?"Preço não definido":brl(precos.PC)+" / 100K";
     $("estC").classList.toggle("off",estoque.CONSOLE===null||estoque.CONSOLE===0);
     $("estP").classList.toggle("off",estoque.PC===null||estoque.PC===0);
     [["CONSOLE","p1","estC"],["PC","p2","estP"]].forEach(([k,radio,card])=>{
