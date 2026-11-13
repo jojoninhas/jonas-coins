@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,65 +7,277 @@
 <meta name="robots" content="noindex">
 <title>Jonas Coins — Fazer pedido</title>
 <style>
-:root{--bg:#07110d;--panel:#101d17;--panel2:#14251c;--line:#294434;--green:#35df83;--green2:#19b866;--text:#effaf3;--muted:#9ab2a2;--danger:#ff7777;--gold:#f6c76a}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;padding:28px 14px 44px;background:radial-gradient(ellipse at 50% -15%,#1b5637 0%,#0b1c13 42%,var(--bg) 78%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-.wrap{width:100%;max-width:620px;margin:auto}
-header{text-align:center;margin-bottom:22px}
-.logo{width:58px;height:58px;margin:0 auto 12px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,#35df83,#118b4c);color:#062313;font-size:29px;box-shadow:0 12px 35px #19b86640}
-header h1{font-size:clamp(25px,5vw,32px);margin:0;letter-spacing:-.7px}
-header p{margin:8px 0 0;color:var(--muted);font-size:14px}
-.estoque{border:1px solid var(--line);border-radius:20px;padding:17px;background:linear-gradient(135deg,#14291d,#0e1b14);margin-bottom:16px;box-shadow:0 14px 38px #0003}
-.section-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
-.section-top strong{font-size:14px}
-.live{font-size:11px;color:var(--green);white-space:nowrap}
-.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 9px var(--green)}
-.plats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.plat{min-width:0;background:#09140e;border:1px solid #294434;border-radius:15px;padding:13px}
-.plat .pn{font-size:12px;color:var(--muted);font-weight:650}
-.plat .val{font-size:25px;font-weight:850;color:var(--green);margin:5px 0 2px}
-.plat .px{font-size:12px;color:#d4e8da}
-.plat.off{opacity:.45}
-.at{font-size:10px;color:#718b79;margin-top:11px}
-form,.success{background:linear-gradient(160deg,#14231a,#0e1913);border:1px solid var(--line);border-radius:22px;padding:clamp(17px,4vw,24px);box-shadow:0 18px 50px #0004}
-.form-title{font-size:18px;font-weight:800;margin-bottom:4px}
-.form-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
-label{display:block;font-size:13px;font-weight:700;color:#c9dfd0;margin:15px 0 7px}
-input[type=text],input[type=email]{width:100%;border:1px solid #345340;border-radius:12px;background:#08130d;color:var(--text);padding:14px;font-size:16px;outline:none}
-input:focus{border-color:var(--green);box-shadow:0 0 0 3px #35df8318}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg label{margin:0;border:1px solid #345340;border-radius:13px;padding:14px 12px;background:#09140e;text-align:center;cursor:pointer;color:#d5e9dc;transition:.15s}
-.seg input:checked+label{border-color:var(--green);background:#153522;box-shadow:inset 0 0 0 1px var(--green);color:#fff}
-.seg label small{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:5px}
-.method-note{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.5}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
-.warn{color:var(--gold)}
-.total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;margin-top:14px;border:1px solid #356345;background:#0a1710;border-radius:13px;color:var(--muted);font-size:13px}
-.total b{font-size:22px;color:var(--green);white-space:nowrap}
-.hide{display:none!important}
-.hp{position:absolute;left:-9999px}
-.enviar{width:100%;margin-top:20px;border:0;border-radius:13px;padding:16px;background:linear-gradient(100deg,var(--green),#20c878);color:#062313;font-size:16px;font-weight:850;cursor:pointer;box-shadow:0 9px 24px #19b86630}
-.enviar:disabled{opacity:.55;cursor:wait}
-.msg{min-height:18px;text-align:center;margin-top:12px;font-size:13px}
-.msg.err{color:var(--danger)}
-.success{text-align:center;padding:32px 20px}
-.success .big{font-size:45px}
-.success h2{margin:8px 0}
-.success p{color:var(--muted);font-size:14px;line-height:1.6}
-.success a,.success button{display:inline-block;margin-top:15px;padding:11px 17px;border-radius:11px;border:1px solid var(--green);background:transparent;color:var(--green);text-decoration:none;cursor:pointer}
-footer{text-align:center;color:#718b79;font-size:11px;line-height:1.6;margin:17px 10px 0}
-@media(max-width:430px){.plats{gap:7px}.plat{padding:11px}.plat .val{font-size:21px}.seg{gap:7px}}
+:root {
+  --bg:#07110d;
+  --panel:#101d17;
+  --line:#294434;
+  --green:#35df83;
+  --text:#effaf3;
+  --muted:#9ab2a2;
+  --danger:#ff7777;
+  --gold:#f6c76a;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  min-height:100vh;
+  padding:28px 14px 44px;
+  background:radial-gradient(
+    ellipse at 50% -15%,
+    #1b5637 0%,#0b1c13 42%,var(--bg) 78%
+  );
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.wrap { width:100%;max-width:620px;margin:auto; }
+header { text-align:center;margin-bottom:22px; }
+.logo {
+  width:58px;height:58px;margin:0 auto 12px;
+  border-radius:18px;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#35df83,#118b4c);
+  color:#062313;font-size:29px;
+}
+header h1 {
+  font-size:clamp(25px,5vw,32px);
+  margin:0;letter-spacing:-.7px;
+}
+header p {
+  margin:8px 0 0;
+  color:var(--muted);font-size:14px;
+}
+.estoque {
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:17px;
+  background:linear-gradient(135deg,#14291d,#0e1b14);
+  margin-bottom:16px;
+  box-shadow:0 14px 38px #0003;
+}
+.section-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:13px;
+}
+.section-top strong { font-size:14px; }
+.live {
+  font-size:11px;
+  color:var(--green);
+  white-space:nowrap;
+}
+.live:before {
+  content:"";
+  display:inline-block;
+  width:7px;height:7px;
+  border-radius:50%;
+  background:var(--green);
+  margin-right:6px;
+  box-shadow:0 0 9px var(--green);
+}
+.plats,.seg {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.plat {
+  min-width:0;
+  background:#09140e;
+  border:1px solid #294434;
+  border-radius:15px;
+  padding:13px;
+}
+.plat .pn {
+  font-size:12px;
+  color:var(--muted);
+  font-weight:650;
+}
+.plat .val {
+  font-size:25px;
+  font-weight:850;
+  color:var(--green);
+  margin:5px 0 2px;
+}
+.plat .px {
+  font-size:12px;
+  color:#d4e8da;
+}
+.plat.off { opacity:.45; }
+.at {
+  font-size:10px;
+  color:#718b79;
+  margin-top:11px;
+}
+form,.success {
+  background:linear-gradient(160deg,#14231a,#0e1913);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:clamp(17px,4vw,24px);
+  box-shadow:0 18px 50px #0004;
+}
+.form-title {
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.form-sub {
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:18px;
+}
+label {
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:#c9dfd0;
+  margin:15px 0 7px;
+}
+input[type=text],input[type=email] {
+  width:100%;
+  border:1px solid #345340;
+  border-radius:12px;
+  background:#08130d;
+  color:var(--text);
+  padding:14px;
+  font-size:16px;
+  outline:none;
+}
+input:focus {
+  border-color:var(--green);
+  box-shadow:0 0 0 3px #35df8318;
+}
+.seg input {
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.seg label {
+  margin:0;
+  border:1px solid #345340;
+  border-radius:13px;
+  padding:14px 12px;
+  background:#09140e;
+  text-align:center;
+  cursor:pointer;
+  color:#d5e9dc;
+  transition:.15s;
+}
+.seg input:checked+label {
+  border-color:var(--green);
+  background:#153522;
+  box-shadow:inset 0 0 0 1px var(--green);
+  color:#fff;
+}
+.seg label small {
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:500;
+  margin-top:5px;
+}
+.method-note {
+  font-size:12px;
+  color:var(--muted);
+  margin-top:9px;
+  line-height:1.5;
+}
+.hint {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-top:7px;
+}
+.warn { color:var(--gold); }
+.total {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 15px;
+  margin-top:14px;
+  border:1px solid #356345;
+  background:#0a1710;
+  border-radius:13px;
+  color:var(--muted);
+  font-size:13px;
+}
+.total b {
+  font-size:22px;
+  color:var(--green);
+  white-space:nowrap;
+}
+.hide { display:none!important; }
+.hp { position:absolute;left:-9999px; }
+.enviar {
+  width:100%;
+  margin-top:20px;
+  border:0;
+  border-radius:13px;
+  padding:16px;
+  background:linear-gradient(100deg,var(--green),#20c878);
+  color:#062313;
+  font-size:16px;
+  font-weight:850;
+  cursor:pointer;
+}
+.enviar:disabled {
+  opacity:.55;
+  cursor:wait;
+}
+.msg {
+  min-height:18px;
+  text-align:center;
+  margin-top:12px;
+  font-size:13px;
+}
+.msg.err { color:var(--danger); }
+.success {
+  text-align:center;
+  padding:32px 20px;
+}
+.success .big { font-size:45px; }
+.success h2 { margin:8px 0; }
+.success p {
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+}
+.success a,.success button {
+  display:inline-block;
+  margin-top:15px;
+  padding:11px 17px;
+  border-radius:11px;
+  border:1px solid var(--green);
+  background:transparent;
+  color:var(--green);
+  text-decoration:none;
+  cursor:pointer;
+}
+footer {
+  text-align:center;
+  color:#718b79;
+  font-size:11px;
+  line-height:1.6;
+  margin:17px 10px 0;
+}
+@media(max-width:430px) {
+  .plats,.seg { gap:7px; }
+  .plat { padding:11px; }
+  .plat .val { font-size:21px; }
+}
 </style>
 <script>
 const CONFIG = {
-  NOME_LOJA: "Jonas Coins",
-  API: "https://pedidos-jonas.jonaspzo.workers.dev",
-  WHATSAPP: "5549988642601"
+  NOME_LOJA:"Jonas Coins",
+  API:"https://pedidos-jonas.jonaspzo.workers.dev",
+  WHATSAPP:"5549988642601"
 };
 </script>
 </head>
 <body>
 <div class="wrap">
+
 <header>
   <div class="logo">⚽</div>
   <h1>Jonas Coins</h1>
@@ -72,182 +285,608 @@ const CONFIG = {
 </header>
 
 <section class="estoque" id="boxEstoque">
-  <div class="section-top"><strong>1. Estoque disponível</strong><span class="live">Atualização automática</span></div>
+  <div class="section-top">
+    <strong>1. Estoque disponível</strong>
+    <span class="live">Atualização automática</span>
+  </div>
   <div class="plats">
-    <div class="plat" id="estC"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="valC">—</div></div>
-    <div class="plat" id="estP"><div class="pn">💻 PC</div><div class="val" id="valP">—</div></div>
+    <div class="plat" id="estC">
+      <div class="pn">🎮 XBOX / PLAYSTATION</div>
+      <div class="val" id="valC">—</div>
+    </div>
+    <div class="plat" id="estP">
+      <div class="pn">💻 PC</div>
+      <div class="val" id="valP">—</div>
+    </div>
   </div>
   <div class="at" id="estAt">Consultando estoque...</div>
 </section>
 
 <section class="estoque" id="boxPrecos">
-  <div class="section-top"><strong>2. Preços por plataforma</strong><span class="live">Por 100K coins</span></div>
+  <div class="section-top">
+    <strong>2. Preços por plataforma</strong>
+    <span class="live">Por 100K coins</span>
+  </div>
   <div class="plats">
-    <div class="plat"><div class="pn">🎮 XBOX / PLAYSTATION</div><div class="val" id="pxC">Consultando...</div><div class="px">Preço por 100K</div></div>
-    <div class="plat"><div class="pn">💻 PC</div><div class="val" id="pxP">Consultando...</div><div class="px">Preço por 100K</div></div>
+    <div class="plat">
+      <div class="pn">🎮 XBOX / PLAYSTATION</div>
+      <div class="val" id="pxC">Consultando...</div>
+      <div class="px">Sniper por 100K</div>
+    </div>
+    <div class="plat">
+      <div class="pn">💻 PC</div>
+      <div class="val" id="pxP">Consultando...</div>
+      <div class="px">Sniper por 100K · 14% de desconto</div>
+    </div>
   </div>
 </section>
 
 <form id="f" autocomplete="off">
   <div class="form-title">Novo pedido</div>
-  <div class="form-sub">Selecione a plataforma, o método de entrega e a quantidade desejada.</div>
+  <div class="form-sub">
+    Selecione a plataforma, o método de entrega
+    e a quantidade desejada.
+  </div>
 
   <label>Plataforma</label>
   <div class="seg">
-    <input type="radio" name="plataforma" id="p1" value="CONSOLE" required>
-    <label for="p1">🎮 Xbox / PS<small id="precoCForm">Preço: — / 100K</small></label>
-    <input type="radio" name="plataforma" id="p2" value="PC">
-    <label for="p2">💻 PC<small id="precoPForm">Preço: — / 100K</small></label>
+    <input type="radio" name="plataforma"
+           id="p1" value="CONSOLE" required>
+    <label for="p1">
+      🎮 Xbox / PS
+      <small id="precoCForm">Preço: — / 100K</small>
+    </label>
+
+    <input type="radio" name="plataforma"
+           id="p2" value="PC">
+    <label for="p2">
+      💻 PC
+      <small id="precoPForm">Preço: — / 100K</small>
+    </label>
   </div>
 
   <label>Método de entrega</label>
   <div class="seg">
-    <input type="radio" name="metodo" id="mSniper" value="SNIPER" required checked>
-    <label for="mSniper">🎯 Sniper<small id="sniperInfo">Preço por 100K conforme plataforma</small></label>
-    <input type="radio" name="metodo" id="mBuy" value="BUY_NOW">
-    <label for="mBuy">⚡ Buy Now<small id="buyInfo">Estimated Proceeds + 30%</small></label>
+    <input type="radio" name="metodo"
+           id="mSniper" value="SNIPER"
+           required checked>
+    <label for="mSniper">
+      🎯 Sniper
+      <small id="sniperInfo">
+        Preço por 100K conforme plataforma
+      </small>
+    </label>
+
+    <input type="radio" name="metodo"
+           id="mBuy" value="BUY_NOW">
+    <label for="mBuy">
+      ⚡ Buy Now
+      <small id="buyInfo">
+        Estimated Proceeds + 30%
+      </small>
+    </label>
   </div>
-  <div class="method-note">⏱ Prazo estimado de entrega: <b>1 a 3 horas</b> para os dois métodos.</div>
+
+  <div class="method-note">
+    ⏱ Prazo estimado de entrega:
+    <b>1 a 3 horas</b> para os dois métodos.
+  </div>
   <div class="hint warn hide" id="avisoMetodo"></div>
 
   <label for="quantidade">Quantidade de coins</label>
-  <input type="text" id="quantidade" name="quantidade" placeholder="Ex.: 750K, 1M ou 1500000" required inputmode="text">
-  <div class="hint">Digite a quantidade desejada. Ex.: 750K, 1M ou 1500000.</div>
+  <input
+    type="text"
+    id="quantidade"
+    name="quantidade"
+    placeholder="Ex.: 750K, 1M ou 1500000"
+    required
+    inputmode="text"
+  >
+  <div class="hint">
+    Digite a quantidade desejada.
+    Ex.: 750K, 1M ou 1500000.
+  </div>
   <div class="hint warn hide" id="avisoQtd"></div>
-  <div class="total hide" id="boxTotal"><span id="totalLbl">Total estimado</span><b id="totalVal">R$ 0,00</b></div>
+
+  <div class="total hide" id="boxTotal">
+    <span id="totalLbl">Total estimado</span>
+    <b id="totalVal">R$ 0,00</b>
+  </div>
 
   <label for="email">Email da conta EA</label>
-  <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required autocapitalize="off">
+  <input
+    type="email"
+    id="email"
+    name="email"
+    placeholder="seuemail@exemplo.com"
+    required
+    autocapitalize="off"
+  >
 
-  <label for="contato">Seu nome ou WhatsApp <span style="font-weight:400;color:#819b89">(opcional)</span></label>
-  <input type="text" id="contato" name="contato" placeholder="Seu nome ou número com DDD">
+  <label for="contato">
+    Seu nome ou WhatsApp
+    <span style="font-weight:400;color:#819b89">
+      (opcional)
+    </span>
+  </label>
+  <input
+    type="text"
+    id="contato"
+    name="contato"
+    placeholder="Seu nome ou número com DDD"
+  >
 
-  <input type="text" name="site" class="hp" tabindex="-1" autocomplete="off">
-  <button class="enviar" id="btn" type="submit">Enviar pedido</button>
+  <input type="text" name="site"
+         class="hp" tabindex="-1" autocomplete="off">
+
+  <button class="enviar" id="btn" type="submit">
+    Enviar pedido
+  </button>
   <div class="msg" id="msg" role="alert"></div>
 </form>
 
 <section class="success hide" id="ok">
   <div class="big">✅</div>
   <h2>Pedido recebido!</h2>
-  <p>Recebemos seu pedido. Entraremos em contato para combinar a autenticação e os próximos passos.<br><b>Não envie senhas nem códigos de backup pelo formulário.</b></p>
-  <a id="zap" class="hide" target="_blank" rel="noopener">Falar no WhatsApp</a>
-  <br><button type="button" id="novo">Fazer outro pedido</button>
+  <p>
+    Recebemos seu pedido. Entraremos em contato
+    para combinar a autenticação e os próximos passos.
+    <b>Não envie senhas nem códigos de backup pelo formulário.</b>
+  </p>
+  <a id="zap" class="hide" target="_blank" rel="noopener">
+    Falar no WhatsApp
+  </a>
+  <br>
+  <button type="button" id="novo">
+    Fazer outro pedido
+  </button>
 </section>
 
-<footer>Jonas Coins · Confira a plataforma, a quantidade e o valor estimado antes de enviar.</footer>
+<footer>
+  Jonas Coins · Confira a plataforma, a quantidade
+  e o valor estimado antes de enviar.
+</footer>
 </div>
+
 <script>
 const $ = id => document.getElementById(id);
-const brl = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
-let estoque={CONSOLE:null,PC:null}, precos={CONSOLE:null,PC:null}, minimo=100000;
-let buyNow={CONSOLE:null,PC:null};
-const valido = v => typeof v === "number" && Number.isFinite(v) && v > 0;
-const numero = v => v === null || v === undefined || v === "" ? null : Number(v);
-function precoAtual(plat,metodo){return metodo==="BUY_NOW"?buyNow[plat]:precos[plat];}
-function atualizarInfoMetodo(){
-  const plat=document.querySelector('input[name="plataforma"]:checked')?.value;
-  const sn=plat?precos[plat]:null, buy=plat?buyNow[plat]:null;
-  $("sniperInfo").textContent=valido(sn)?brl(sn)+" / 100K":"Preço por 100K conforme plataforma";
-  $("buyInfo").textContent=valido(buy)?brl(buy)+" / 100K":"Preço aguardando cotação";
-  const aviso=$("avisoMetodo");
-  const metodo=document.querySelector('input[name="metodo"]:checked')?.value;
-  aviso.classList.toggle("hide",metodo!=="BUY_NOW" || valido(buy));
-  aviso.textContent="Buy Now ainda não possui cotação disponível para esta plataforma.";
+
+const brl = n =>
+  "R$ " + n.toLocaleString("pt-BR", {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+
+const DESCONTO_PC_SNIPER = 0.14;
+
+let estoque = {
+  CONSOLE:null,
+  PC:null
+};
+
+let precos = {
+  CONSOLE:null,
+  PC:null
+};
+
+let buyNow = {
+  CONSOLE:null,
+  PC:null
+};
+
+let minimo = 100000;
+
+const NOME = {
+  CONSOLE:"Xbox / PS",
+  PC:"PC"
+};
+
+const numero = v =>
+  v === null || v === undefined || v === ""
+    ? null
+    : Number(v);
+
+const valido = v =>
+  typeof v === "number" &&
+  Number.isFinite(v) &&
+  v > 0;
+
+function arredondar(n) {
+  return Math.round((n + Number.EPSILON) * 100) / 100;
 }
-const NOME={CONSOLE:"Xbox / PS",PC:"PC"};
-function parseCoins(v){
-  const s=String(v||"").trim().toUpperCase().replace(/\s/g,"").replace(",",".");
-  const m=s.match(/^(\d+(?:\.\d+)?)(K|M)?$/);
-  if(!m)return null;
-  return Math.round(parseFloat(m[1])*(m[2]==="M"?1e6:m[2]==="K"?1e3:1));
+
+function precoAtual(plat, metodo) {
+  return metodo === "BUY_NOW"
+    ? buyNow[plat]
+    : precos[plat];
 }
-async function carregarEstoque(){
-  try{
-    const r=await fetch(CONFIG.API+"/estoque",{cache:"no-store"});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const d=await r.json();
-    estoque={CONSOLE:d.CONSOLE?d.CONSOLE.coins:null,PC:d.PC?d.PC.coins:null};
-    precos={CONSOLE:d.precos?d.precos.CONSOLE:null,PC:d.precos?d.precos.PC:null};
-    if(d.min)minimo=d.min;
-    // Preços Buy Now publicados pelo Worker, caso disponíveis.
-    // Alternativa: calcular a partir do Estimated Proceeds EUR e do câmbio fornecidos pela API.
-    const det=d.precosDetalhes||{};
-    const pcDet=d.precosDetalhesPC||d.precosPcDetalhes||{};
-    const eur=numero(det.cambioEurBrl);
-    const eurPC=numero(pcDet.cambioEurBrl) || eur;
-    const consProceeds=numero(det.proceedsEUR);
-    const pcProceeds=numero(pcDet.proceedsEUR ?? pcDet.estimatedProceedsEur ?? d.estimatedProceedsPcEur);
-    const apiBuy=d.precosBuyNow||{};
-    buyNow={
-      CONSOLE:valido(numero(apiBuy.CONSOLE))?numero(apiBuy.CONSOLE):valido(consProceeds)&&valido(eur)?Math.round(consProceeds*eur*1.30*100)/100:null,
-      PC:valido(numero(apiBuy.PC))?numero(apiBuy.PC):valido(pcProceeds)&&valido(eurPC)?Math.round(pcProceeds*eurPC*1.30*100)/100:null
+
+function atualizarInfoMetodo() {
+  const plat = document.querySelector(
+    'input[name="plataforma"]:checked'
+  )?.value;
+
+  const sn = plat ? precos[plat] : null;
+  const buy = plat ? buyNow[plat] : null;
+
+  $("sniperInfo").textContent = valido(sn)
+    ? brl(sn) + " / 100K"
+    : "Preço por 100K conforme plataforma";
+
+  $("buyInfo").textContent = valido(buy)
+    ? brl(buy) + " / 100K"
+    : "Preço aguardando cotação";
+
+  const aviso = $("avisoMetodo");
+  const metodo = document.querySelector(
+    'input[name="metodo"]:checked'
+  )?.value;
+
+  aviso.classList.toggle(
+    "hide",
+    metodo !== "BUY_NOW" || valido(buy)
+  );
+
+  aviso.textContent =
+    "Buy Now ainda não possui cotação disponível para esta plataforma.";
+}
+
+function parseCoins(v) {
+  const s = String(v || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s/g,"")
+    .replace(",",".");
+
+  const m = s.match(/^(\d+(?:\.\d+)?)(K|M)?$/);
+
+  if (!m) return null;
+
+  return Math.round(
+    parseFloat(m[1]) *
+    (m[2] === "M" ? 1e6 : m[2] === "K" ? 1e3 : 1)
+  );
+}
+
+async function carregarEstoque() {
+  try {
+    const r = await fetch(
+      CONFIG.API + "/estoque",
+      {cache:"no-store"}
+    );
+
+    if (!r.ok) {
+      throw new Error("HTTP " + r.status);
+    }
+
+    const d = await r.json();
+
+    estoque = {
+      CONSOLE:d.CONSOLE?.coins ?? null,
+      PC:d.PC?.coins ?? null
     };
-    $("valC").textContent=estoque.CONSOLE===null?"Indisponível":(d.CONSOLE.texto||"—");
-    $("valP").textContent=estoque.PC===null?"Indisponível":(d.PC.texto||"—");
-    $("pxC").textContent=precos.CONSOLE===null?"Não definido":brl(precos.CONSOLE);
-    $("pxP").textContent=precos.PC===null?"Não definido":brl(precos.PC);
-    $("precoCForm").textContent=precos.CONSOLE===null?"Preço não definido":brl(precos.CONSOLE)+" / 100K";
-    $("precoPForm").textContent=precos.PC===null?"Preço não definido":brl(precos.PC)+" / 100K";
-    $("estC").classList.toggle("off",estoque.CONSOLE===null||estoque.CONSOLE===0);
-    $("estP").classList.toggle("off",estoque.PC===null||estoque.PC===0);
-    [["CONSOLE","p1","estC"],["PC","p2","estP"]].forEach(([k,radio,card])=>{
-      const disabled=estoque[k]===null;
-      $(radio).disabled=disabled;
-      document.querySelector(`label[for="${radio}"]`).classList.toggle("off",disabled);
-      if(disabled&&$(radio).checked)$(radio).checked=false;
+
+    // Preços originais recebidos do Worker.
+    const precoConsoleOriginal = numero(
+      d.precos?.CONSOLE
+    );
+
+    const precoPcOriginal = numero(
+      d.precos?.PC
+    );
+
+    // Xbox / PlayStation permanece sem alteração.
+    // PC Sniper recebe desconto automático de 14%.
+    precos = {
+      CONSOLE:valido(precoConsoleOriginal)
+        ? precoConsoleOriginal
+        : null,
+
+      PC:valido(precoPcOriginal)
+        ? arredondar(
+            precoPcOriginal * (1 - DESCONTO_PC_SNIPER)
+          )
+        : null
+    };
+
+    if (d.min) minimo = d.min;
+
+    // Buy Now continua usando Estimated Proceeds
+    // acrescido de 30% e convertido para reais.
+    const det = d.precosDetalhes || {};
+
+    const pcDet =
+      d.precosDetalhesPC ||
+      d.precosPcDetalhes ||
+      {};
+
+    const eur = numero(det.cambioEurBrl);
+
+    const eurPC =
+      numero(pcDet.cambioEurBrl) || eur;
+
+    const consProceeds = numero(
+      det.proceedsEUR
+    );
+
+    const pcProceeds = numero(
+      pcDet.proceedsEUR ??
+      pcDet.estimatedProceedsEur ??
+      d.estimatedProceedsPcEur
+    );
+
+    const apiBuy = d.precosBuyNow || {};
+
+    const apiConsole = numero(apiBuy.CONSOLE);
+    const apiPC = numero(apiBuy.PC);
+
+    buyNow = {
+      CONSOLE:valido(apiConsole)
+        ? apiConsole
+        : valido(consProceeds) && valido(eur)
+          ? arredondar(consProceeds * eur * 1.30)
+          : null,
+
+      PC:valido(apiPC)
+        ? apiPC
+        : valido(pcProceeds) && valido(eurPC)
+          ? arredondar(pcProceeds * eurPC * 1.30)
+          : null
+    };
+
+    $("valC").textContent =
+      estoque.CONSOLE === null
+        ? "Indisponível"
+        : d.CONSOLE?.texto || "—";
+
+    $("valP").textContent =
+      estoque.PC === null
+        ? "Indisponível"
+        : d.PC?.texto || "—";
+
+    $("pxC").textContent =
+      precos.CONSOLE === null
+        ? "Não definido"
+        : brl(precos.CONSOLE);
+
+    $("pxP").textContent =
+      precos.PC === null
+        ? "Não definido"
+        : brl(precos.PC);
+
+    $("precoCForm").textContent =
+      precos.CONSOLE === null
+        ? "Preço não definido"
+        : brl(precos.CONSOLE) + " / 100K";
+
+    $("precoPForm").textContent =
+      precos.PC === null
+        ? "Preço não definido"
+        : brl(precos.PC) + " / 100K";
+
+    $("estC").classList.toggle(
+      "off",
+      estoque.CONSOLE === null ||
+      estoque.CONSOLE === 0
+    );
+
+    $("estP").classList.toggle(
+      "off",
+      estoque.PC === null ||
+      estoque.PC === 0
+    );
+
+    [
+      ["CONSOLE","p1"],
+      ["PC","p2"]
+    ].forEach(([k,radio]) => {
+      const disabled = estoque[k] === null;
+
+      $(radio).disabled = disabled;
+
+      document.querySelector(
+        `label[for="${radio}"]`
+      ).classList.toggle("off",disabled);
+
+      if (disabled && $(radio).checked) {
+        $(radio).checked = false;
+      }
     });
-    $("estAt").textContent=d.atualizado?"Atualizado em "+new Date(d.atualizado).toLocaleString("pt-BR"):"Estoque informado pelo vendedor";
+
+    $("estAt").textContent = d.atualizado
+      ? "Atualizado em " +
+        new Date(d.atualizado).toLocaleString("pt-BR")
+      : "Estoque informado pelo vendedor";
+
     atualizarInfoMetodo();
     atualizarTotal();
-  }catch(e){
-    $("estAt").textContent="Não foi possível consultar o estoque agora. Tente novamente em instantes.";
+
+  } catch (e) {
+    $("estAt").textContent =
+      "Não foi possível consultar o estoque agora. " +
+      "Tente novamente em instantes.";
   }
 }
-function atualizarTotal(){
-  const q=parseCoins($("quantidade").value), plat=document.querySelector('input[name="plataforma"]:checked')?.value;
-  const aviso=$("avisoQtd"), total=$("boxTotal");
-  aviso.classList.add("hide");total.classList.add("hide");
-  if($("quantidade").value&&q===null){aviso.textContent="Formato inválido. Use, por exemplo, 750K, 1M ou 1500000.";aviso.classList.remove("hide");return;}
-  if(q!==null&&q<minimo){aviso.textContent="Pedido mínimo: "+(minimo/1000)+"K coins.";aviso.classList.remove("hide");}
-  if(!plat||!q)return;
-  const metodo=document.querySelector('input[name="metodo"]:checked')?.value;
-  const disponivel=estoque[plat], preco=precoAtual(plat,metodo);
-  if(disponivel!==null&&q>disponivel){aviso.textContent="Quantidade acima do estoque disponível. O pedido poderá levar mais tempo.";aviso.classList.remove("hide");}
-  if(preco!==null){
-    $("totalLbl").textContent=NOME[plat]+" · "+(metodo==="BUY_NOW"?"Buy Now":"Sniper")+" · valor estimado";
-    $("totalVal").textContent=brl(Math.round(q/100000*preco*100)/100);
+
+function atualizarTotal() {
+  const q = parseCoins(
+    $("quantidade").value
+  );
+
+  const plat = document.querySelector(
+    'input[name="plataforma"]:checked'
+  )?.value;
+
+  const aviso = $("avisoQtd");
+  const total = $("boxTotal");
+
+  aviso.classList.add("hide");
+  total.classList.add("hide");
+
+  if ($("quantidade").value && q === null) {
+    aviso.textContent =
+      "Formato inválido. Use 750K, 1M ou 1500000.";
+    aviso.classList.remove("hide");
+    return;
+  }
+
+  if (q !== null && q < minimo) {
+    aviso.textContent =
+      "Pedido mínimo: " + (minimo / 1000) + "K coins.";
+    aviso.classList.remove("hide");
+  }
+
+  if (!plat || !q) return;
+
+  const metodo = document.querySelector(
+    'input[name="metodo"]:checked'
+  )?.value;
+
+  const disponivel = estoque[plat];
+  const preco = precoAtual(plat,metodo);
+
+  if (
+    disponivel !== null &&
+    q > disponivel
+  ) {
+    aviso.textContent =
+      "Quantidade acima do estoque disponível. " +
+      "O pedido poderá levar mais tempo.";
+    aviso.classList.remove("hide");
+  }
+
+  if (valido(preco)) {
+    $("totalLbl").textContent =
+      NOME[plat] + " · " +
+      (metodo === "BUY_NOW" ? "Buy Now" : "Sniper") +
+      " · valor estimado";
+
+    $("totalVal").textContent = brl(
+      arredondar(q / 100000 * preco)
+    );
+
     total.classList.remove("hide");
   }
 }
-document.querySelectorAll('input[name="plataforma"],input[name="metodo"]').forEach(x=>x.addEventListener("change",()=>{atualizarInfoMetodo();atualizarTotal();}));
-$("quantidade").addEventListener("input",atualizarTotal);
-$("f").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const dados=Object.fromEntries(new FormData($("f")).entries()), msg=$("msg");
-  msg.className="msg";msg.textContent="";
-  const q=parseCoins(dados.quantidade);
-  if(!dados.plataforma){msg.classList.add("err");msg.textContent="Selecione a plataforma.";return;}
-  if(!q||q<minimo){msg.classList.add("err");msg.textContent="Quantidade inválida ou abaixo do mínimo de "+(minimo/1000)+"K.";return;}
-  const precoSelecionado=precoAtual(dados.plataforma,dados.metodo);
-  if(!valido(precoSelecionado)){
-    msg.classList.add("err");msg.textContent="Preço indisponível para este método e plataforma. Aguarde a atualização.";return;
-  }
-  dados.precoPor100K=precoSelecionado;
-  dados.valorEstimado=Math.round(q/100000*precoSelecionado*100)/100;
-  dados.prazoEntrega="1 a 3 horas";
-  $("btn").disabled=true;$("btn").textContent="Enviando pedido...";
-  try{
-    const r=await fetch(CONFIG.API+"/pedido",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(dados)});
-    const d=await r.json();
-    if(!r.ok||!d.ok)throw new Error(d.erro||"Não foi possível enviar o pedido.");
-    $("f").classList.add("hide");$("ok").classList.remove("hide");
-    if(CONFIG.WHATSAPP){$("zap").href="https://wa.me/"+CONFIG.WHATSAPP;$("zap").classList.remove("hide");}
-  }catch(err){msg.className="msg err";msg.textContent=err.message||"Erro ao enviar. Tente novamente.";}
-  finally{$("btn").disabled=false;$("btn").textContent="Enviar pedido";}
+
+document.querySelectorAll(
+  'input[name="plataforma"],input[name="metodo"]'
+).forEach(x => {
+  x.addEventListener("change",() => {
+    atualizarInfoMetodo();
+    atualizarTotal();
+  });
 });
-$("novo").addEventListener("click",()=>{$("ok").classList.add("hide");$("f").reset();$("f").classList.remove("hide");atualizarInfoMetodo();atualizarTotal();});
-carregarEstoque();setInterval(carregarEstoque,60000);
+
+$("quantidade").addEventListener(
+  "input",
+  atualizarTotal
+);
+
+$("f").addEventListener("submit",async e => {
+  e.preventDefault();
+
+  const dados = Object.fromEntries(
+    new FormData($("f")).entries()
+  );
+
+  const msg = $("msg");
+  msg.className = "msg";
+  msg.textContent = "";
+
+  const q = parseCoins(dados.quantidade);
+
+  if (!dados.plataforma) {
+    msg.classList.add("err");
+    msg.textContent = "Selecione a plataforma.";
+    return;
+  }
+
+  if (!q || q < minimo) {
+    msg.classList.add("err");
+    msg.textContent =
+      "Quantidade inválida ou abaixo do mínimo de " +
+      (minimo / 1000) + "K.";
+    return;
+  }
+
+  const precoSelecionado = precoAtual(
+    dados.plataforma,
+    dados.metodo
+  );
+
+  if (!valido(precoSelecionado)) {
+    msg.classList.add("err");
+    msg.textContent =
+      "Preço indisponível para este método e plataforma. " +
+      "Aguarde a atualização.";
+    return;
+  }
+
+  // Envia o preço já com desconto quando
+  // o cliente escolher PC + Sniper.
+  dados.precoPor100K = precoSelecionado;
+
+  dados.valorEstimado = arredondar(
+    q / 100000 * precoSelecionado
+  );
+
+  dados.prazoEntrega = "1 a 3 horas";
+
+  $("btn").disabled = true;
+  $("btn").textContent = "Enviando pedido...";
+
+  try {
+    const r = await fetch(
+      CONFIG.API + "/pedido",
+      {
+        method:"POST",
+        headers:{
+          "content-type":"application/json"
+        },
+        body:JSON.stringify(dados)
+      }
+    );
+
+    const d = await r.json();
+
+    if (!r.ok || !d.ok) {
+      throw new Error(
+        d.erro || "Não foi possível enviar o pedido."
+      );
+    }
+
+    $("f").classList.add("hide");
+    $("ok").classList.remove("hide");
+
+    if (CONFIG.WHATSAPP) {
+      $("zap").href =
+        "https://wa.me/" + CONFIG.WHATSAPP;
+      $("zap").classList.remove("hide");
+    }
+
+  } catch (err) {
+    msg.className = "msg err";
+    msg.textContent =
+      err.message || "Erro ao enviar. Tente novamente.";
+
+  } finally {
+    $("btn").disabled = false;
+    $("btn").textContent = "Enviar pedido";
+  }
+});
+
+$("novo").addEventListener("click",() => {
+  $("ok").classList.add("hide");
+  $("f").reset();
+  $("f").classList.remove("hide");
+  atualizarInfoMetodo();
+  atualizarTotal();
+});
+
+// Consulta o Worker a cada 60 segundos.
+carregarEstoque();
+setInterval(carregarEstoque,60000);
 </script>
 </body>
 </html>
