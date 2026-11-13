@@ -37,7 +37,7 @@ input:focus{border-color:var(--green);box-shadow:0 0 0 3px #35df8318}
 .seg label{margin:0;border:1px solid #345340;border-radius:13px;padding:14px 12px;background:#09140e;text-align:center;cursor:pointer;color:#d5e9dc;transition:.15s}
 .seg input:checked+label{border-color:var(--green);background:#153522;box-shadow:inset 0 0 0 1px var(--green);color:#fff}
 .seg label small{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:5px}
-.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
+.method-note{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.5}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
 .warn{color:var(--gold)}
 .total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;margin-top:14px;border:1px solid #356345;background:#0a1710;border-radius:13px;color:var(--muted);font-size:13px}
 .total b{font-size:22px;color:var(--green);white-space:nowrap}
@@ -90,7 +90,7 @@ const CONFIG = {
 
 <form id="f" autocomplete="off">
   <div class="form-title">Novo pedido</div>
-  <div class="form-sub">Selecione a plataforma e informe a quantidade desejada.</div>
+  <div class="form-sub">Selecione a plataforma, o método de entrega e a quantidade desejada.</div>
 
   <label>Plataforma</label>
   <div class="seg">
@@ -99,6 +99,16 @@ const CONFIG = {
     <input type="radio" name="plataforma" id="p2" value="PC">
     <label for="p2">💻 PC<small id="precoPForm">Preço: — / 100K</small></label>
   </div>
+
+  <label>Método de entrega</label>
+  <div class="seg">
+    <input type="radio" name="metodo" id="mSniper" value="SNIPER" required checked>
+    <label for="mSniper">🎯 Sniper<small id="sniperInfo">Preço por 100K conforme plataforma</small></label>
+    <input type="radio" name="metodo" id="mBuy" value="BUY_NOW">
+    <label for="mBuy">⚡ Buy Now<small id="buyInfo">Estimated Proceeds + 30%</small></label>
+  </div>
+  <div class="method-note">⏱ Prazo estimado de entrega: <b>1 a 3 horas</b> para os dois métodos.</div>
+  <div class="hint warn hide" id="avisoMetodo"></div>
 
   <label for="quantidade">Quantidade de coins</label>
   <input type="text" id="quantidade" name="quantidade" placeholder="Ex.: 750K, 1M ou 1500000" required inputmode="text">
@@ -131,6 +141,20 @@ const CONFIG = {
 const $ = id => document.getElementById(id);
 const brl = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 let estoque={CONSOLE:null,PC:null}, precos={CONSOLE:null,PC:null}, minimo=100000;
+let buyNow={CONSOLE:null,PC:null};
+const valido = v => typeof v === "number" && Number.isFinite(v) && v > 0;
+const numero = v => v === null || v === undefined || v === "" ? null : Number(v);
+function precoAtual(plat,metodo){return metodo==="BUY_NOW"?buyNow[plat]:precos[plat];}
+function atualizarInfoMetodo(){
+  const plat=document.querySelector('input[name="plataforma"]:checked')?.value;
+  const sn=plat?precos[plat]:null, buy=plat?buyNow[plat]:null;
+  $("sniperInfo").textContent=valido(sn)?brl(sn)+" / 100K":"Preço por 100K conforme plataforma";
+  $("buyInfo").textContent=valido(buy)?brl(buy)+" / 100K":"Preço aguardando cotação";
+  const aviso=$("avisoMetodo");
+  const metodo=document.querySelector('input[name="metodo"]:checked')?.value;
+  aviso.classList.toggle("hide",metodo!=="BUY_NOW" || valido(buy));
+  aviso.textContent="Buy Now ainda não possui cotação disponível para esta plataforma.";
+}
 const NOME={CONSOLE:"Xbox / PS",PC:"PC"};
 function parseCoins(v){
   const s=String(v||"").trim().toUpperCase().replace(/\s/g,"").replace(",",".");
@@ -146,6 +170,19 @@ async function carregarEstoque(){
     estoque={CONSOLE:d.CONSOLE?d.CONSOLE.coins:null,PC:d.PC?d.PC.coins:null};
     precos={CONSOLE:d.precos?d.precos.CONSOLE:null,PC:d.precos?d.precos.PC:null};
     if(d.min)minimo=d.min;
+    // Preços Buy Now publicados pelo Worker, caso disponíveis.
+    // Alternativa: calcular a partir do Estimated Proceeds EUR e do câmbio fornecidos pela API.
+    const det=d.precosDetalhes||{};
+    const pcDet=d.precosDetalhesPC||d.precosPcDetalhes||{};
+    const eur=numero(det.cambioEurBrl);
+    const eurPC=numero(pcDet.cambioEurBrl) || eur;
+    const consProceeds=numero(det.proceedsEUR);
+    const pcProceeds=numero(pcDet.proceedsEUR ?? pcDet.estimatedProceedsEur ?? d.estimatedProceedsPcEur);
+    const apiBuy=d.precosBuyNow||{};
+    buyNow={
+      CONSOLE:valido(numero(apiBuy.CONSOLE))?numero(apiBuy.CONSOLE):valido(consProceeds)&&valido(eur)?Math.round(consProceeds*eur*1.30*100)/100:null,
+      PC:valido(numero(apiBuy.PC))?numero(apiBuy.PC):valido(pcProceeds)&&valido(eurPC)?Math.round(pcProceeds*eurPC*1.30*100)/100:null
+    };
     $("valC").textContent=estoque.CONSOLE===null?"Indisponível":(d.CONSOLE.texto||"—");
     $("valP").textContent=estoque.PC===null?"Indisponível":(d.PC.texto||"—");
     $("pxC").textContent=precos.CONSOLE===null?"Não definido":brl(precos.CONSOLE);
@@ -161,6 +198,7 @@ async function carregarEstoque(){
       if(disabled&&$(radio).checked)$(radio).checked=false;
     });
     $("estAt").textContent=d.atualizado?"Atualizado em "+new Date(d.atualizado).toLocaleString("pt-BR"):"Estoque informado pelo vendedor";
+    atualizarInfoMetodo();
     atualizarTotal();
   }catch(e){
     $("estAt").textContent="Não foi possível consultar o estoque agora. Tente novamente em instantes.";
@@ -173,15 +211,16 @@ function atualizarTotal(){
   if($("quantidade").value&&q===null){aviso.textContent="Formato inválido. Use, por exemplo, 750K, 1M ou 1500000.";aviso.classList.remove("hide");return;}
   if(q!==null&&q<minimo){aviso.textContent="Pedido mínimo: "+(minimo/1000)+"K coins.";aviso.classList.remove("hide");}
   if(!plat||!q)return;
-  const disponivel=estoque[plat], preco=precos[plat];
+  const metodo=document.querySelector('input[name="metodo"]:checked')?.value;
+  const disponivel=estoque[plat], preco=precoAtual(plat,metodo);
   if(disponivel!==null&&q>disponivel){aviso.textContent="Quantidade acima do estoque disponível. O pedido poderá levar mais tempo.";aviso.classList.remove("hide");}
   if(preco!==null){
-    $("totalLbl").textContent=NOME[plat]+" · valor estimado";
+    $("totalLbl").textContent=NOME[plat]+" · "+(metodo==="BUY_NOW"?"Buy Now":"Sniper")+" · valor estimado";
     $("totalVal").textContent=brl(Math.round(q/100000*preco*100)/100);
     total.classList.remove("hide");
   }
 }
-document.querySelectorAll('input[name="plataforma"]').forEach(x=>x.addEventListener("change",atualizarTotal));
+document.querySelectorAll('input[name="plataforma"],input[name="metodo"]').forEach(x=>x.addEventListener("change",()=>{atualizarInfoMetodo();atualizarTotal();}));
 $("quantidade").addEventListener("input",atualizarTotal);
 $("f").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -190,6 +229,13 @@ $("f").addEventListener("submit",async e=>{
   const q=parseCoins(dados.quantidade);
   if(!dados.plataforma){msg.classList.add("err");msg.textContent="Selecione a plataforma.";return;}
   if(!q||q<minimo){msg.classList.add("err");msg.textContent="Quantidade inválida ou abaixo do mínimo de "+(minimo/1000)+"K.";return;}
+  const precoSelecionado=precoAtual(dados.plataforma,dados.metodo);
+  if(!valido(precoSelecionado)){
+    msg.classList.add("err");msg.textContent="Preço indisponível para este método e plataforma. Aguarde a atualização.";return;
+  }
+  dados.precoPor100K=precoSelecionado;
+  dados.valorEstimado=Math.round(q/100000*precoSelecionado*100)/100;
+  dados.prazoEntrega="1 a 3 horas";
   $("btn").disabled=true;$("btn").textContent="Enviando pedido...";
   try{
     const r=await fetch(CONFIG.API+"/pedido",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(dados)});
@@ -200,7 +246,7 @@ $("f").addEventListener("submit",async e=>{
   }catch(err){msg.className="msg err";msg.textContent=err.message||"Erro ao enviar. Tente novamente.";}
   finally{$("btn").disabled=false;$("btn").textContent="Enviar pedido";}
 });
-$("novo").addEventListener("click",()=>{$("ok").classList.add("hide");$("f").reset();$("f").classList.remove("hide");atualizarTotal();});
+$("novo").addEventListener("click",()=>{$("ok").classList.add("hide");$("f").reset();$("f").classList.remove("hide");atualizarInfoMetodo();atualizarTotal();});
 carregarEstoque();setInterval(carregarEstoque,60000);
 </script>
 </body>
