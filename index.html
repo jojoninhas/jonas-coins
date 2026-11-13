@@ -187,7 +187,7 @@ async function carregarEstoque(){
     const apiBuy=d.precosBuyNow||{};
     buyNow={
       CONSOLE:valido(numero(apiBuy.CONSOLE))?numero(apiBuy.CONSOLE):valido(consProceeds)&&valido(eur)?Math.round(consProceeds*eur*1.30*100)/100:null,
-      PC:valido(numero(apiBuy.PC))?Math.round(numero(apiBuy.PC)*0.86*100)/100:valido(pcProceeds)&&valido(eurPC)?Math.round(pcProceeds*eurPC*1.30*0.86*100)/100:null
+      PC:valido(numero(apiBuy.PC))?numero(apiBuy.PC):valido(numero(pcDet.typicalSalePriceEur))&&valido(eurPC)?Math.round(numero(pcDet.typicalSalePriceEur)*eurPC*1.27*100)/100:null
     };
     $("pxBuyC").textContent=valido(buyNow.CONSOLE)?brl(buyNow.CONSOLE):"Aguardando cotação";
     $("pxBuyP").textContent=valido(buyNow.PC)?brl(buyNow.PC):"Aguardando cotação";
